@@ -1,6 +1,7 @@
 package com.engrkirky.moonlight.services;
 
 import com.engrkirky.moonlight.dto.DoctorDTO;
+import com.engrkirky.moonlight.dto.DoctorLocationDTO;
 import com.engrkirky.moonlight.model.Doctor;
 import com.engrkirky.moonlight.repository.DoctorRepository;
 import org.modelmapper.ModelMapper;
@@ -51,6 +52,11 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public void deleteDoctor(Integer id) {
         doctorRepository.deleteById(id);
+    }
+
+    @Override
+    public DoctorLocationDTO updateDoctorLocation(Integer id, DoctorLocationDTO doctorLocationDTO) {
+        return doctorLocationDTO;
     }
 
     private DoctorDTO convertToDTO(Doctor entity) {

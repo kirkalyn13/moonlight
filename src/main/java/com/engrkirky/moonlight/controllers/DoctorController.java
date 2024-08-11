@@ -1,6 +1,7 @@
 package com.engrkirky.moonlight.controllers;
 
 import com.engrkirky.moonlight.dto.DoctorDTO;
+import com.engrkirky.moonlight.dto.DoctorLocationDTO;
 import com.engrkirky.moonlight.services.DoctorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,13 @@ public class DoctorController {
     public ResponseEntity<String> deleteDoctor(@PathVariable("id") Integer id) {
         doctorService.deleteDoctor(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}/location")
+    public ResponseEntity<DoctorLocationDTO> updateDoctorLocation(
+            @PathVariable("id") Integer id,
+            @RequestBody DoctorLocationDTO doctorLocationDTO) {
+        DoctorLocationDTO result = doctorService.updateDoctorLocation(id, doctorLocationDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
