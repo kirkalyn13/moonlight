@@ -42,8 +42,8 @@ public class DoctorController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteDoctor(Integer id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteDoctor(@PathVariable("id") Integer id) {
         doctorService.deleteDoctor(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
