@@ -1,7 +1,7 @@
 package com.engrkirky.moonlight.service;
 
 import com.engrkirky.moonlight.dto.DoctorDTO;
-import com.engrkirky.moonlight.model.Doctor;
+import com.engrkirky.moonlight.mapper.DoctorMapper;
 import com.engrkirky.moonlight.repository.DoctorRepository;
 import com.engrkirky.moonlight.util.DoctorUtil;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,12 +19,12 @@ import java.util.List;
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
-    private final ModelMapper modelMapper;
+    private final DoctorMapper doctorMapper;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository, ModelMapper modelMapper) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, DoctorMapper doctorMapper) {
         this.doctorRepository = doctorRepository;
-        this.modelMapper = modelMapper;
+        this.doctorMapper = doctorMapper;
     }
 
 
@@ -32,12 +32,12 @@ public class DoctorServiceImpl implements DoctorService {
     public Page<DoctorDTO> getDoctors(String search, Pageable pageable) {
         return doctorRepository
                 .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(search, search, pageable)
-                .map(this::convertToDTO);
+                .map(doctorMapper::convertToDTO);
     }
 
     @Override
     public DoctorDTO getDoctorById(Integer id) {
-        return convertToDTO(doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Doctor with ID of %d not found.", id))));
+        return doctorMapper.convertToDTO(doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Doctor with ID of %d not found.", id))));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository
                 .findByIsAvailableTrue()
                 .stream()
-                .map(this::convertToDTO)
+                .map(doctorMapper::convertToDTO)
                 .toList();
     }
 
@@ -56,7 +56,7 @@ public class DoctorServiceImpl implements DoctorService {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
 
-        return doctorRepository.save(convertToEntity(doctorDTO)).getId();
+        return doctorRepository.save(doctorMapper.convertToEntity(doctorDTO)).getId();
     }
 
     @Override
@@ -65,34 +65,34 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository
                 .findById(id)
                 .map(doctor -> {
-                    if (doctorDTO.getUsername() != null && DoctorUtil.isValidUserName(doctorDTO.getUsername())) {
-                        doctor.setUsername(doctorDTO.getUsername());
+                    if (doctorDTO.username() != null && DoctorUtil.isValidUserName(doctorDTO.username())) {
+                        doctor.setUsername(doctorDTO.username());
                     }
-                    if (doctorDTO.getPassword() != null && DoctorUtil.isValidPassword(doctorDTO.getPassword())) {
-                        doctor.setPassword(doctorDTO.getPassword());
+                    if (doctorDTO.password() != null && DoctorUtil.isValidPassword(doctorDTO.password())) {
+                        doctor.setPassword(doctorDTO.password());
                     }
-                    if (doctorDTO.getFirstName() != null) {
-                        doctor.setFirstName(doctorDTO.getFirstName());
+                    if (doctorDTO.firstName() != null) {
+                        doctor.setFirstName(doctorDTO.firstName());
                     }
-                    if (doctorDTO.getLastName() != null) {
-                        doctor.setLastName(doctorDTO.getLastName());
+                    if (doctorDTO.lastName() != null) {
+                        doctor.setLastName(doctorDTO.lastName());
                     }
-                    if (DoctorUtil.isValidLongitude(doctorDTO.getLongitude())) {
-                        doctor.setLongitude(doctorDTO.getLongitude());
+                    if (DoctorUtil.isValidLongitude(doctorDTO.longitude())) {
+                        doctor.setLongitude(doctorDTO.longitude());
                     }
-                    if (DoctorUtil.isValidLatitude(doctorDTO.getLatitude())) {
-                        doctor.setLatitude(doctorDTO.getLatitude());
+                    if (DoctorUtil.isValidLatitude(doctorDTO.latitude())) {
+                        doctor.setLatitude(doctorDTO.latitude());
                     }
-                    if (doctorDTO.getContactNumber() != null && DoctorUtil.isValidContactNumber(doctorDTO.getContactNumber())) {
-                        doctor.setContactNumber(doctorDTO.getContactNumber());
+                    if (doctorDTO.contactNumber() != null && DoctorUtil.isValidContactNumber(doctorDTO.contactNumber())) {
+                        doctor.setContactNumber(doctorDTO.contactNumber());
                     }
-                    if (doctorDTO.getEmail() != null && DoctorUtil.isValidEmail(doctorDTO.getEmail())) {
-                        doctor.setEmail(doctorDTO.getEmail());
+                    if (doctorDTO.email() != null && DoctorUtil.isValidEmail(doctorDTO.email())) {
+                        doctor.setEmail(doctorDTO.email());
                     }
                     if (doctorDTO.isAvailable()) {
                         doctor.setAvailable(true);
                     }
-                    return convertToDTO(doctorRepository.save(doctor));
+                    return doctorMapper.convertToDTO(doctorRepository.save(doctor));
                 })
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Doctor with ID of %d not found.", id)));
     }
@@ -110,35 +110,27 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private static boolean validateDoctor(DoctorDTO doctorDTO) {
-        if (doctorDTO.getUsername() == null || !DoctorUtil.isValidUserName(doctorDTO.getUsername())) {
+        if (doctorDTO.username() == null || !DoctorUtil.isValidUserName(doctorDTO.username())) {
             return false;
         }
-        if (doctorDTO.getPassword() == null|| !DoctorUtil.isValidPassword(doctorDTO.getPassword())) {
+        if (doctorDTO.password() == null|| !DoctorUtil.isValidPassword(doctorDTO.password())) {
             return false;
         }
-        if (doctorDTO.getFirstName() == null) {
+        if (doctorDTO.firstName() == null) {
             return false;
         }
-        if (doctorDTO.getLastName() == null) {
+        if (doctorDTO.lastName() == null) {
             return false;
         }
-        if (!DoctorUtil.isValidLongitude(doctorDTO.getLongitude())) {
+        if (!DoctorUtil.isValidLongitude(doctorDTO.longitude())) {
             return false;
         }
-        if (!DoctorUtil.isValidLatitude(doctorDTO.getLatitude())) {
+        if (!DoctorUtil.isValidLatitude(doctorDTO.latitude())) {
             return false;
         }
-        if (doctorDTO.getContactNumber() == null || !DoctorUtil.isValidContactNumber(doctorDTO.getContactNumber())) {
+        if (doctorDTO.contactNumber() == null || !DoctorUtil.isValidContactNumber(doctorDTO.contactNumber())) {
             return false;
         }
-        return doctorDTO.getEmail() != null && DoctorUtil.isValidEmail(doctorDTO.getEmail());
-    }
-
-    private DoctorDTO convertToDTO(Doctor entity) {
-        return modelMapper.map(entity, DoctorDTO.class);
-    }
-
-    private Doctor convertToEntity(DoctorDTO dto) {
-        return modelMapper.map(dto, Doctor.class);
+        return doctorDTO.email() != null && DoctorUtil.isValidEmail(doctorDTO.email());
     }
 }
