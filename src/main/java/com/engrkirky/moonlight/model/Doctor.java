@@ -38,6 +38,5 @@ public class Doctor {
     private String email;
 
     @Column(name = "is_available")
-    @JsonProperty(namespace = "isAvailable")
     private boolean isAvailable;
 }
