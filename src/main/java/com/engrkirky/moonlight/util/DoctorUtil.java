@@ -25,6 +25,10 @@ public class DoctorUtil {
         return longitude >= -180 && longitude <= 180;
     }
 
+    public static boolean isValidContactNumber(String input) {
+        return input != null && input.matches("\\d{11}");
+    }
+
     public static boolean isValidEmail(String email) {
         if (email == null) {
             return false;

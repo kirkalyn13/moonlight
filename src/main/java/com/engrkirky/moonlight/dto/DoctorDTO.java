@@ -20,6 +20,5 @@ public class DoctorDTO implements Serializable {
     private double latitude;
     private String contactNumber;
     private String email;
-    @JsonProperty(namespace = "isAvailable")
     private boolean isAvailable;
 }

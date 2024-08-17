@@ -3,6 +3,9 @@ package com.engrkirky.moonlight.controller;
 import com.engrkirky.moonlight.dto.DoctorDTO;
 import com.engrkirky.moonlight.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +23,12 @@ public class DoctorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DoctorDTO>> getDoctors() {
-        List<DoctorDTO> results = doctorService.getDoctors();
+    public ResponseEntity<Page<DoctorDTO>> getDoctors(
+            @RequestParam("offset") Integer offset,
+            @RequestParam("size") Integer size,
+            @RequestParam("search") String search) {
+        Pageable pageable = PageRequest.of(offset, size);
+        Page<DoctorDTO> results = doctorService.getDoctors(search, pageable);
 
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
@@ -30,6 +37,11 @@ public class DoctorController {
     public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable("id") Integer id) {
         DoctorDTO result = doctorService.getDoctorById(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    @GetMapping("/available")
+    public ResponseEntity<List<DoctorDTO>> getAvailableDoctors() {
+        List<DoctorDTO> results = doctorService.getAvailableDoctors();
+        return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
     @PostMapping
