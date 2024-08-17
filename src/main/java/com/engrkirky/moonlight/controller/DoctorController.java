@@ -1,8 +1,8 @@
-package com.engrkirky.moonlight.controllers;
+package com.engrkirky.moonlight.controller;
 
 import com.engrkirky.moonlight.dto.DoctorDTO;
-import com.engrkirky.moonlight.dto.DoctorLocationDTO;
-import com.engrkirky.moonlight.services.DoctorService;
+import com.engrkirky.moonlight.service.DoctorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +14,7 @@ import java.util.List;
 public class DoctorController {
     private final DoctorService doctorService;
 
+    @Autowired
     public DoctorController(DoctorService doctorService) {
         this.doctorService = doctorService;
     }
@@ -37,9 +38,9 @@ public class DoctorController {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<DoctorDTO> editDoctor(@PathVariable("id") Integer id, @RequestBody DoctorDTO doctorDTO) {
-        DoctorDTO result = doctorService.editDoctor(id, doctorDTO);
+    @PatchMapping("/{id}")
+    public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable("id") Integer id, @RequestBody DoctorDTO doctorDTO) {
+        DoctorDTO result = doctorService.updateDoctor(id, doctorDTO);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -47,13 +48,5 @@ public class DoctorController {
     public ResponseEntity<String> deleteDoctor(@PathVariable("id") Integer id) {
         doctorService.deleteDoctor(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @PutMapping("/{id}/location")
-    public ResponseEntity<DoctorLocationDTO> updateDoctorLocation(
-            @PathVariable("id") Integer id,
-            @RequestBody DoctorLocationDTO doctorLocationDTO) {
-        DoctorLocationDTO result = doctorService.updateDoctorLocation(id, doctorLocationDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

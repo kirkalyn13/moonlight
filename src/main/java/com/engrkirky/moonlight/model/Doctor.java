@@ -1,5 +1,6 @@
 package com.engrkirky.moonlight.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -35,4 +36,8 @@ public class Doctor {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "is_available")
+    @JsonProperty(namespace = "isAvailable")
+    private boolean isAvailable;
 }
