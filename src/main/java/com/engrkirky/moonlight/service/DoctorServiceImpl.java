@@ -7,14 +7,14 @@ import com.engrkirky.moonlight.util.DoctorUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
-import javax.print.Doc;
 import java.util.List;
-
 @Service
 public class DoctorServiceImpl implements DoctorService {
 
@@ -29,12 +29,10 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public List<DoctorDTO> getDoctors() {
+    public Page<DoctorDTO> getDoctors(String search, Pageable pageable) {
         return doctorRepository
-                .findAll()
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
+                .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(search, search, pageable)
+                .map(this::convertToDTO);
     }
 
     @Override
