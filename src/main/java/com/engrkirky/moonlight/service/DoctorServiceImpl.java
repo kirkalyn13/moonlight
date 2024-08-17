@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.print.Doc;
 import java.util.List;
 
 @Service
@@ -39,6 +40,15 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public DoctorDTO getDoctorById(Integer id) {
         return convertToDTO(doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Doctor with ID of %d not found.", id))));
+    }
+
+    @Override
+    public List<DoctorDTO> getAvailableDoctors() {
+        return doctorRepository
+                .findByIsAvailableTrue()
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @Override

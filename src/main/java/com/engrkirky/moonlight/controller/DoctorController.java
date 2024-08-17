@@ -31,6 +31,11 @@ public class DoctorController {
         DoctorDTO result = doctorService.getDoctorById(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+    @GetMapping("/available")
+    public ResponseEntity<List<DoctorDTO>> getAvailableDoctors() {
+        List<DoctorDTO> results = doctorService.getAvailableDoctors();
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<Integer> addDoctor(@RequestBody DoctorDTO doctorDTO) {
