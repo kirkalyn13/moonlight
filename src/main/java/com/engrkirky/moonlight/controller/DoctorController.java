@@ -29,7 +29,6 @@ public class DoctorController {
             @RequestParam("search") String search) {
         Pageable pageable = PageRequest.of(offset, size);
         Page<DoctorDTO> results = doctorService.getDoctors(search, pageable);
-
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 

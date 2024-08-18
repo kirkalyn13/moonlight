@@ -4,8 +4,8 @@ import com.engrkirky.moonlight.dto.DoctorDTO;
 import com.engrkirky.moonlight.mapper.DoctorMapper;
 import com.engrkirky.moonlight.repository.DoctorRepository;
 import com.engrkirky.moonlight.util.DoctorUtil;
+import com.engrkirky.moonlight.util.LocationUtil;
 import jakarta.persistence.EntityNotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,33 +65,15 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository
                 .findById(id)
                 .map(doctor -> {
-                    if (doctorDTO.username() != null && DoctorUtil.isValidUserName(doctorDTO.username())) {
-                        doctor.setUsername(doctorDTO.username());
-                    }
-                    if (doctorDTO.password() != null && DoctorUtil.isValidPassword(doctorDTO.password())) {
-                        doctor.setPassword(doctorDTO.password());
-                    }
-                    if (doctorDTO.firstName() != null) {
-                        doctor.setFirstName(doctorDTO.firstName());
-                    }
-                    if (doctorDTO.lastName() != null) {
-                        doctor.setLastName(doctorDTO.lastName());
-                    }
-                    if (DoctorUtil.isValidLongitude(doctorDTO.longitude())) {
-                        doctor.setLongitude(doctorDTO.longitude());
-                    }
-                    if (DoctorUtil.isValidLatitude(doctorDTO.latitude())) {
-                        doctor.setLatitude(doctorDTO.latitude());
-                    }
-                    if (doctorDTO.contactNumber() != null && DoctorUtil.isValidContactNumber(doctorDTO.contactNumber())) {
-                        doctor.setContactNumber(doctorDTO.contactNumber());
-                    }
-                    if (doctorDTO.email() != null && DoctorUtil.isValidEmail(doctorDTO.email())) {
-                        doctor.setEmail(doctorDTO.email());
-                    }
-                    if (doctorDTO.isAvailable()) {
-                        doctor.setAvailable(true);
-                    }
+                    if (doctorDTO.username() != null && DoctorUtil.isValidUserName(doctorDTO.username())) doctor.setUsername(doctorDTO.username());
+                    if (doctorDTO.password() != null && DoctorUtil.isValidPassword(doctorDTO.password())) doctor.setPassword(doctorDTO.password());
+                    if (doctorDTO.firstName() != null) doctor.setFirstName(doctorDTO.firstName());
+                    if (doctorDTO.lastName() != null) doctor.setLastName(doctorDTO.lastName());
+                    if (LocationUtil.isValidLongitude(doctorDTO.longitude())) doctor.setLongitude(doctorDTO.longitude());
+                    if (LocationUtil.isValidLatitude(doctorDTO.latitude())) doctor.setLatitude(doctorDTO.latitude());
+                    if (doctorDTO.contactNumber() != null && DoctorUtil.isValidContactNumber(doctorDTO.contactNumber())) doctor.setContactNumber(doctorDTO.contactNumber());
+                    if (doctorDTO.email() != null && DoctorUtil.isValidEmail(doctorDTO.email())) doctor.setEmail(doctorDTO.email());
+                    if (doctorDTO.isAvailable()) doctor.setAvailable(true);
                     return doctorMapper.convertToDTO(doctorRepository.save(doctor));
                 })
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Doctor with ID of %d not found.", id)));
@@ -110,27 +92,14 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private static boolean validateDoctor(DoctorDTO doctorDTO) {
-        if (doctorDTO.username() == null || !DoctorUtil.isValidUserName(doctorDTO.username())) {
-            return false;
-        }
-        if (doctorDTO.password() == null|| !DoctorUtil.isValidPassword(doctorDTO.password())) {
-            return false;
-        }
-        if (doctorDTO.firstName() == null) {
-            return false;
-        }
-        if (doctorDTO.lastName() == null) {
-            return false;
-        }
-        if (!DoctorUtil.isValidLongitude(doctorDTO.longitude())) {
-            return false;
-        }
-        if (!DoctorUtil.isValidLatitude(doctorDTO.latitude())) {
-            return false;
-        }
-        if (doctorDTO.contactNumber() == null || !DoctorUtil.isValidContactNumber(doctorDTO.contactNumber())) {
-            return false;
-        }
+        if (doctorDTO.username() == null || !DoctorUtil.isValidUserName(doctorDTO.username())) return false;
+        if (doctorDTO.password() == null|| !DoctorUtil.isValidPassword(doctorDTO.password())) return false;
+        if (doctorDTO.firstName() == null) return false;
+        if (doctorDTO.lastName() == null) return false;
+        if (!LocationUtil.isValidLongitude(doctorDTO.longitude())) return false;
+        if (!LocationUtil.isValidLatitude(doctorDTO.latitude())) return false;
+        if (doctorDTO.contactNumber() == null || !DoctorUtil.isValidContactNumber(doctorDTO.contactNumber())) return false;
+
         return doctorDTO.email() != null && DoctorUtil.isValidEmail(doctorDTO.email());
     }
 }
