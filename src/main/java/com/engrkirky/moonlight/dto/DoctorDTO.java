@@ -14,5 +14,6 @@ public record DoctorDTO (
     double latitude,
     String contactNumber,
     String email,
-    boolean isAvailable
+    boolean isAvailable,
+    double preferredDistance
 ) {}

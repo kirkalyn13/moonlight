@@ -3,6 +3,7 @@ package com.engrkirky.moonlight.service;
 import com.engrkirky.moonlight.dto.DoctorDTO;
 import com.engrkirky.moonlight.mapper.DoctorMapper;
 import com.engrkirky.moonlight.repository.DoctorRepository;
+import com.engrkirky.moonlight.util.Constants;
 import com.engrkirky.moonlight.util.DoctorUtil;
 import com.engrkirky.moonlight.util.LocationUtil;
 import jakarta.persistence.EntityNotFoundException;
@@ -69,11 +70,12 @@ public class DoctorServiceImpl implements DoctorService {
                     if (doctorDTO.password() != null && DoctorUtil.isValidPassword(doctorDTO.password())) doctor.setPassword(doctorDTO.password());
                     if (doctorDTO.firstName() != null) doctor.setFirstName(doctorDTO.firstName());
                     if (doctorDTO.lastName() != null) doctor.setLastName(doctorDTO.lastName());
-                    if (LocationUtil.isValidLongitude(doctorDTO.longitude())) doctor.setLongitude(doctorDTO.longitude());
-                    if (LocationUtil.isValidLatitude(doctorDTO.latitude())) doctor.setLatitude(doctorDTO.latitude());
+                    if (LocationUtil.isValidLongitude(doctorDTO.longitude()) && doctorDTO.longitude() != Constants.EMPTY_DOUBLE_FIELD) doctor.setLongitude(doctorDTO.longitude());
+                    if (LocationUtil.isValidLatitude(doctorDTO.latitude()) && doctorDTO.latitude() != Constants.EMPTY_DOUBLE_FIELD) doctor.setLatitude(doctorDTO.latitude());
                     if (doctorDTO.contactNumber() != null && DoctorUtil.isValidContactNumber(doctorDTO.contactNumber())) doctor.setContactNumber(doctorDTO.contactNumber());
                     if (doctorDTO.email() != null && DoctorUtil.isValidEmail(doctorDTO.email())) doctor.setEmail(doctorDTO.email());
                     if (doctorDTO.isAvailable()) doctor.setAvailable(true);
+                    if (doctorDTO.preferredDistance() != Constants.EMPTY_DOUBLE_FIELD) doctor.setPreferredDistance(doctorDTO.preferredDistance());
                     return doctorMapper.convertToDTO(doctorRepository.save(doctor));
                 })
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Doctor with ID of %d not found.", id)));
@@ -93,13 +95,13 @@ public class DoctorServiceImpl implements DoctorService {
 
     private static boolean validateDoctor(DoctorDTO doctorDTO) {
         if (doctorDTO.username() == null || !DoctorUtil.isValidUserName(doctorDTO.username())) return false;
-        if (doctorDTO.password() == null|| !DoctorUtil.isValidPassword(doctorDTO.password())) return false;
+        if (doctorDTO.password() == null || !DoctorUtil.isValidPassword(doctorDTO.password())) return false;
         if (doctorDTO.firstName() == null) return false;
         if (doctorDTO.lastName() == null) return false;
-        if (!LocationUtil.isValidLongitude(doctorDTO.longitude())) return false;
-        if (!LocationUtil.isValidLatitude(doctorDTO.latitude())) return false;
+        if (!LocationUtil.isValidLongitude(doctorDTO.longitude()) || doctorDTO.longitude() == Constants.EMPTY_DOUBLE_FIELD) return false;
+        if (!LocationUtil.isValidLatitude(doctorDTO.latitude()) || doctorDTO.latitude() == Constants.EMPTY_DOUBLE_FIELD) return false;
         if (doctorDTO.contactNumber() == null || !DoctorUtil.isValidContactNumber(doctorDTO.contactNumber())) return false;
-
-        return doctorDTO.email() != null && DoctorUtil.isValidEmail(doctorDTO.email());
+        if (doctorDTO.email() == null || !DoctorUtil.isValidEmail(doctorDTO.email())) return false;
+        return doctorDTO.preferredDistance() != Constants.EMPTY_DOUBLE_FIELD;
     }
 }
