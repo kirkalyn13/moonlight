@@ -2,19 +2,10 @@ package com.engrkirky.moonlight.mapper;
 
 import com.engrkirky.moonlight.dto.DoctorDTO;
 import com.engrkirky.moonlight.model.Doctor;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DoctorMapperImpl implements DoctorMapper {
-    private final ModelMapper modelMapper;
-
-    @Autowired
-    public DoctorMapperImpl(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
-
     @Override
     public DoctorDTO convertToDTO(Doctor doctor) {
         return new DoctorDTO(
@@ -32,7 +23,18 @@ public class DoctorMapperImpl implements DoctorMapper {
     }
 
     @Override
-    public Doctor convertToEntity(DoctorDTO DoctorDTO) {
-        return modelMapper.map(DoctorDTO, Doctor.class);
+    public Doctor convertToEntity(DoctorDTO doctorDTO) {
+        return Doctor.builder()
+                .id(doctorDTO.id())
+                .username(doctorDTO.username())
+                .password(doctorDTO.password())
+                .firstName(doctorDTO.firstName())
+                .lastName(doctorDTO.lastName())
+                .longitude(doctorDTO.longitude())
+                .latitude(doctorDTO.latitude())
+                .contactNumber(doctorDTO.contactNumber())
+                .email(doctorDTO.email())
+                .isAvailable(doctorDTO.isAvailable())
+                .build();
     }
 }
