@@ -17,14 +17,6 @@ public class DoctorUtil {
         return username.split("").length > 8;
     }
 
-    public static boolean isValidLatitude(double latitude) {
-        return latitude >= -90 && latitude <= 90;
-    }
-
-    public static boolean isValidLongitude(double longitude) {
-        return longitude >= -180 && longitude <= 180;
-    }
-
     public static boolean isValidContactNumber(String input) {
         return input != null && input.matches("\\d{11}");
     }
