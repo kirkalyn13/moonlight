@@ -1,5 +1,6 @@
 package com.engrkirky.moonlight.service;
 
+import com.engrkirky.moonlight.dto.DoctorDTO;
 import com.engrkirky.moonlight.dto.MoonlightDTO;
 import com.engrkirky.moonlight.mapper.MoonlightMapper;
 import com.engrkirky.moonlight.repository.MoonlightRepository;
@@ -14,14 +15,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
+
 @Service
 public class MoonlightServiceImpl implements MoonlightService {
     private final MoonlightRepository moonlightRepository;
+    private final DoctorService doctorService;
     private final MoonlightMapper moonlightMapper;
 
     @Autowired
-    public MoonlightServiceImpl(MoonlightRepository moonlightRepository, MoonlightMapper moonlightMapper) {
+    public MoonlightServiceImpl(MoonlightRepository moonlightRepository, DoctorService doctorService, MoonlightMapper moonlightMapper) {
         this.moonlightRepository = moonlightRepository;
+        this.doctorService = doctorService;
         this.moonlightMapper = moonlightMapper;
     }
 
@@ -46,6 +51,7 @@ public class MoonlightServiceImpl implements MoonlightService {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
 
+        notifyAvailableDoctors(moonlightDTO);
         return moonlightRepository.save(moonlightMapper.convertToEntity(moonlightDTO)).getId();
     }
 
@@ -76,6 +82,17 @@ public class MoonlightServiceImpl implements MoonlightService {
                     return moonlight;
                 })
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Moonlight with ID of %d not found.", id)));
+    }
+
+    private void notifyAvailableDoctors(MoonlightDTO moonlightDTO) {
+        List<DoctorDTO> availableDoctors = doctorService.getAvailableDoctors();
+        availableDoctors.stream()
+                .filter(doctor -> LocationUtil.calculateDistance(
+                        doctor.longitude(),
+                        doctor.latitude(),
+                        moonlightDTO.longitude(),
+                        moonlightDTO.latitude()) <= doctor.preferredDistance())
+                .forEach(doctor -> System.out.println("Notifying Doctor " + doctor.firstName() + " " + doctor.lastName()));
     }
 
     private static boolean validateMoonlight(MoonlightDTO moonlightDTO) {

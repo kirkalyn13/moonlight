@@ -18,7 +18,8 @@ public class DoctorMapperImpl implements DoctorMapper {
                 doctor.getLatitude(),
                 doctor.getContactNumber(),
                 doctor.getEmail(),
-                doctor.isAvailable()
+                doctor.isAvailable(),
+                doctor.getPreferredDistance()
         );
     }
 
@@ -35,6 +36,7 @@ public class DoctorMapperImpl implements DoctorMapper {
                 .contactNumber(doctorDTO.contactNumber())
                 .email(doctorDTO.email())
                 .isAvailable(doctorDTO.isAvailable())
+                .preferredDistance(doctorDTO.preferredDistance())
                 .build();
     }
 }

@@ -44,4 +44,7 @@ public class Doctor {
 
     @Column(name = "is_available")
     private boolean isAvailable;
+
+    @Column(name = "preferred_distance")
+    private double preferredDistance;
 }
