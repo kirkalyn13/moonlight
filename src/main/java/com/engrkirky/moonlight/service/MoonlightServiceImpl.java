@@ -51,14 +51,7 @@ public class MoonlightServiceImpl implements MoonlightService {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
 
-        List<DoctorDTO> availableDoctors = doctorService.getAvailableDoctors();
-        List<DoctorDTO> suggestedDoctors = availableDoctors.stream()
-                .filter(doctor -> LocationUtil.calculateDistance(
-                    doctor.longitude(),
-                    doctor.latitude(),
-                    moonlightDTO.longitude(),
-                    moonlightDTO.latitude()) <= doctor.preferredDistance()).toList();
-
+        notifyAvailableDoctors(moonlightDTO);
         return moonlightRepository.save(moonlightMapper.convertToEntity(moonlightDTO)).getId();
     }
 
@@ -89,6 +82,17 @@ public class MoonlightServiceImpl implements MoonlightService {
                     return moonlight;
                 })
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Moonlight with ID of %d not found.", id)));
+    }
+
+    private void notifyAvailableDoctors(MoonlightDTO moonlightDTO) {
+        List<DoctorDTO> availableDoctors = doctorService.getAvailableDoctors();
+        availableDoctors.stream()
+                .filter(doctor -> LocationUtil.calculateDistance(
+                        doctor.longitude(),
+                        doctor.latitude(),
+                        moonlightDTO.longitude(),
+                        moonlightDTO.latitude()) <= doctor.preferredDistance())
+                .forEach(doctor -> System.out.println("Notifying Doctor " + doctor.firstName() + " " + doctor.lastName()));
     }
 
     private static boolean validateMoonlight(MoonlightDTO moonlightDTO) {
