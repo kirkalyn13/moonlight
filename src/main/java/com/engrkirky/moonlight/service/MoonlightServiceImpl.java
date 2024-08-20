@@ -7,7 +7,11 @@ import com.engrkirky.moonlight.repository.MoonlightRepository;
 import com.engrkirky.moonlight.util.LocationUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,16 +22,22 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.List;
 
 @Service
+@PropertySource(value = "classpath:/application.yaml")
 public class MoonlightServiceImpl implements MoonlightService {
+    private static final Logger log = LoggerFactory.getLogger(MoonlightServiceImpl.class);
+    @Value("${app.email.sender}")
+    private String senderEmail;
     private final MoonlightRepository moonlightRepository;
     private final DoctorService doctorService;
     private final MoonlightMapper moonlightMapper;
+    private final EmailSenderService emailSenderService;
 
     @Autowired
-    public MoonlightServiceImpl(MoonlightRepository moonlightRepository, DoctorService doctorService, MoonlightMapper moonlightMapper) {
+    public MoonlightServiceImpl(MoonlightRepository moonlightRepository, DoctorService doctorService, MoonlightMapper moonlightMapper, EmailSenderService emailSenderService) {
         this.moonlightRepository = moonlightRepository;
         this.doctorService = doctorService;
         this.moonlightMapper = moonlightMapper;
+        this.emailSenderService = emailSenderService;
     }
 
     @Override
@@ -92,7 +102,19 @@ public class MoonlightServiceImpl implements MoonlightService {
                         doctor.latitude(),
                         moonlightDTO.longitude(),
                         moonlightDTO.latitude()) <= doctor.preferredDistance())
-                .forEach(doctor -> System.out.println("Notifying Doctor " + doctor.firstName() + " " + doctor.lastName()));
+                .forEach(doctor -> {
+                    log.info("Sending email notification to Doctor " + doctor.firstName() + " " + doctor.lastName());
+                    sendEmail(doctor, moonlightDTO);
+                });
+    }
+
+    private void sendEmail(DoctorDTO doctor, MoonlightDTO moonlight) {
+        final String subject = String.format("Moonlight Schedule | %s %s", doctor.firstName(), doctor.lastName());
+        final String body = String.format("Hi Dr. %s %s,\n\nMoonlight schedule at %s, %s, from %s to %s.\nIf interested, kindly contact %s for more information.\n\nThank you.",
+                doctor.firstName(), doctor.lastName(),
+                moonlight.hospital(), moonlight.city(),
+                moonlight.startDate(), moonlight.endDate(), moonlight.contactNumber());
+        emailSenderService.sendEmail(senderEmail, doctor.email(), subject, body);
     }
 
     private static boolean validateMoonlight(MoonlightDTO moonlightDTO) {

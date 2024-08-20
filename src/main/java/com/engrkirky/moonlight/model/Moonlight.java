@@ -37,4 +37,7 @@ public class Moonlight {
 
     @Column(name = "end_date")
     private Date endDate;
+
+    @Column(name = "contact_number")
+    private String contactNumber;
 }
