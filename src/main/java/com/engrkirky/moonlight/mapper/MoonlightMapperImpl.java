@@ -15,7 +15,8 @@ public class MoonlightMapperImpl implements MoonlightMapper {
                 moonlight.getLongitude(),
                 moonlight.getLatitude(),
                 moonlight.getStartDate(),
-                moonlight.getEndDate()
+                moonlight.getEndDate(),
+                moonlight.getContactNumber()
         );
     }
 
@@ -29,6 +30,7 @@ public class MoonlightMapperImpl implements MoonlightMapper {
                 .latitude(moonlightDTO.latitude())
                 .startDate(moonlightDTO.startDate())
                 .endDate(moonlightDTO.endDate())
+                .contactNumber(moonlightDTO.contactNumber())
                 .build();
     }
 }

@@ -9,6 +9,7 @@ public record MoonlightDTO (
         double longitude,
         double latitude,
         Date startDate,
-        Date endDate
+        Date endDate,
+        String contactNumber
 ) {
 }
