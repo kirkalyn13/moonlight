@@ -53,10 +53,8 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     @Transactional
     public Integer addDoctor(DoctorDTO doctorDTO) {
-        if (!validateDoctor(doctorDTO)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
-        }
-
+        if (!validateDoctor(doctorDTO)) throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+        if (doctorRepository.findByUsername(doctorDTO.username()).isPresent()) throw new HttpClientErrorException((HttpStatus.CONFLICT));
         return doctorRepository.save(doctorMapper.convertToEntity(doctorDTO)).getId();
     }
 

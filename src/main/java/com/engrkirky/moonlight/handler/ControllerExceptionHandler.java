@@ -18,7 +18,7 @@ public class ControllerExceptionHandler {
         return new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), new Date(), ex.getMessage(), request.getDescription(false));
     }
 
-    @ExceptionHandler(HttpClientErrorException.class)
+    @ExceptionHandler(HttpClientErrorException.BadRequest.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage badRequestExceptionHandler(Exception ex, WebRequest request) {
         return new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), ex.getMessage(), request.getDescription(false));
@@ -28,5 +28,11 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage notFoundExceptionHandler(Exception ex, WebRequest request) {
         return new ErrorMessage(HttpStatus.NOT_FOUND.value(), new Date(), ex.getMessage(), request.getDescription(false));
+    }
+
+    @ExceptionHandler(HttpClientErrorException.Conflict.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorMessage conflictExceptionHandler(Exception ex, WebRequest request) {
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), ex.getMessage(), request.getDescription(false));
     }
 }
