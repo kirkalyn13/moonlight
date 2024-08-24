@@ -12,6 +12,14 @@ A simple concept REST API server to search and notify available relievers, built
 
 **Server:** Java, Spring Boot
 
+## Deployment
+
+To deploy, go to the root directory of the project which contains the `docker-compose.yaml` file, then run:
+
+```bash
+  docker compose up
+```
+
 
 ## API Reference
 
@@ -22,3 +30,6 @@ When running the application, visit the [Swagger Docs](http://localhost:8080/swa
 
 - [Engr. Kirk Alyn Santos](https://github.com/kirkalyn13)
 
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
