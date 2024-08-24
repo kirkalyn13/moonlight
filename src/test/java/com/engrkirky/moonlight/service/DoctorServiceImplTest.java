@@ -110,8 +110,7 @@ class DoctorServiceImplTest {
 
     @Test
     void canGetDoctorById() {
-        Integer id = 1;
-
+        Integer id = doctorDTO1.id();
         when(doctorRepository.findById(id)).thenReturn(Optional.of(doctor1));
         when(doctorMapper.convertToDTO(doctor1)).thenReturn(doctorDTO1);
 
@@ -134,11 +133,29 @@ class DoctorServiceImplTest {
         when(doctorRepository.save(doctor1)).thenReturn(doctor1);
 
         Integer result = underTest.addDoctor(doctorDTO1);
-
         ArgumentCaptor<Doctor> doctorArgumentCaptor = ArgumentCaptor.forClass(Doctor.class);
+
         verify(doctorRepository).save(doctorArgumentCaptor.capture());
         assertEquals(doctor1, doctorArgumentCaptor.getValue());
         assertEquals(doctor1.getId(), result);
+    }
+
+    @Test
+    void willThrowWhenInvalidDoctorAdded() {
+        DoctorDTO invalidDoctorDTO = new DoctorDTO(
+                1,
+                "user",
+                "pass",
+                "Stephen",
+                "Strange",
+                12000,
+                15000,
+                "961234",
+                "invalidEmail",
+                true,
+                10.0);
+
+        assertThrows(HttpClientErrorException.class, () -> underTest.addDoctor(invalidDoctorDTO));
     }
 
     @Test
@@ -150,11 +167,12 @@ class DoctorServiceImplTest {
 
     @Test
     void updateDoctor() {
-        when(doctorRepository.findById(doctorDTO1.id())).thenReturn(Optional.of(doctor1));
+        Integer id = doctorDTO1.id();
+        when(doctorRepository.findById(id)).thenReturn(Optional.of(doctor1));
         when(doctorRepository.save(doctor1)).thenReturn(doctor1);
         when(doctorMapper.convertToDTO(doctor1)).thenReturn(doctorDTO1);
 
-        DoctorDTO result = underTest.updateDoctor(doctorDTO1.id(), doctorDTO1);
+        DoctorDTO result = underTest.updateDoctor(id, doctorDTO1);
 
         verify(doctorRepository).save(doctor1);
         assertEquals(doctorDTO1, result);
@@ -162,10 +180,11 @@ class DoctorServiceImplTest {
 
     @Test
     void deleteDoctor() {
-        when(doctorRepository.findById(doctorDTO1.id())).thenReturn(Optional.of(doctor1));
+        Integer id = doctorDTO1.id();
+        when(doctorRepository.findById(id)).thenReturn(Optional.of(doctor1));
 
-        underTest.deleteDoctor(doctorDTO1.id());
+        underTest.deleteDoctor(id);
 
-        verify(doctorRepository).deleteById(doctorDTO1.id());
+        verify(doctorRepository).deleteById(id);
     }
 }

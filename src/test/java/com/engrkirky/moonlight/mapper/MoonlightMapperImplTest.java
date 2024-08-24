@@ -20,7 +20,7 @@ class MoonlightMapperImplTest {
             .latitude(15.14511)
             .startDate(Date.from(Instant.parse("2024-08-23T22:00:00.511Z")))
             .endDate(Date.from(Instant.parse("2024-08-24T02:00:00.511Z")))
-            .contactNumber("09274055567")
+            .contactNumber("09876543211")
             .build();
 
     MoonlightDTO dto = new MoonlightDTO(
@@ -31,7 +31,7 @@ class MoonlightMapperImplTest {
             15.14511,
             Date.from(Instant.parse("2024-08-23T22:00:00.511Z")),
             Date.from(Instant.parse("2024-08-24T02:00:00.511Z")),
-            "09274055567");
+            "09123456789");
 
     @BeforeEach
     void setup() {
