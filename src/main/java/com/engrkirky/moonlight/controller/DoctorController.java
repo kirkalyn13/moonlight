@@ -43,12 +43,6 @@ public class DoctorController {
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Integer> addDoctor(@RequestBody DoctorDTO doctorDTO) {
-        Integer result = doctorService.addDoctor(doctorDTO);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
-    }
-
     @PatchMapping("/{id}")
     public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable("id") Integer id, @RequestBody DoctorDTO doctorDTO) {
         DoctorDTO result = doctorService.updateDoctor(id, doctorDTO);

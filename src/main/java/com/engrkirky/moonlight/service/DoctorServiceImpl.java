@@ -10,10 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 @Service
@@ -52,14 +50,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional
-    public Integer addDoctor(DoctorDTO doctorDTO) {
-        if (!validateDoctor(doctorDTO)) throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
-        if (doctorRepository.findByUsername(doctorDTO.username()).isPresent()) throw new HttpClientErrorException((HttpStatus.CONFLICT));
-        return doctorRepository.save(doctorMapper.convertToEntity(doctorDTO)).getId();
-    }
-
-    @Override
-    @Transactional
     public DoctorDTO updateDoctor(Integer id, DoctorDTO doctorDTO) {
         return doctorRepository
                 .findById(id)
@@ -89,17 +79,5 @@ public class DoctorServiceImpl implements DoctorService {
                     return doctor;
                 })
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Doctor with ID of %d not found.", id)));
-    }
-
-    private static boolean validateDoctor(DoctorDTO doctorDTO) {
-        if (doctorDTO.username() == null || !DoctorUtil.isValidUserName(doctorDTO.username())) return false;
-        if (doctorDTO.password() == null || !DoctorUtil.isValidPassword(doctorDTO.password())) return false;
-        if (doctorDTO.firstName() == null) return false;
-        if (doctorDTO.lastName() == null) return false;
-        if (!LocationUtil.isValidLongitude(doctorDTO.longitude()) || doctorDTO.longitude() == Constants.EMPTY_DOUBLE_FIELD) return false;
-        if (!LocationUtil.isValidLatitude(doctorDTO.latitude()) || doctorDTO.latitude() == Constants.EMPTY_DOUBLE_FIELD) return false;
-        if (doctorDTO.contactNumber() == null || !DoctorUtil.isValidContactNumber(doctorDTO.contactNumber())) return false;
-        if (doctorDTO.email() == null || !DoctorUtil.isValidEmail(doctorDTO.email())) return false;
-        return doctorDTO.preferredDistance() != Constants.EMPTY_DOUBLE_FIELD;
     }
 }
