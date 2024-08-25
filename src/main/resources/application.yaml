@@ -5,8 +5,8 @@ spring:
         password: #db-password
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQLDialect
-#        hibernate:
-#          ddl-auto: create
+        hibernate:
+          ddl-auto: create
     mail:
         host: smtp.gmail.com
         port: 587
@@ -19,5 +19,6 @@ spring:
                     starttls:
                         enable: true
 app:
+    secret-key: #secret-key
     email:
         sender: #mail-username

@@ -128,44 +128,6 @@ class DoctorServiceImplTest {
     }
 
     @Test
-    void canAddDoctor() {
-        when(doctorMapper.convertToEntity(doctorDTO1)).thenReturn(doctor1);
-        when(doctorRepository.save(doctor1)).thenReturn(doctor1);
-
-        Integer result = underTest.addDoctor(doctorDTO1);
-        ArgumentCaptor<Doctor> doctorArgumentCaptor = ArgumentCaptor.forClass(Doctor.class);
-
-        verify(doctorRepository).save(doctorArgumentCaptor.capture());
-        assertEquals(doctor1, doctorArgumentCaptor.getValue());
-        assertEquals(doctor1.getId(), result);
-    }
-
-    @Test
-    void willThrowWhenInvalidDoctorAdded() {
-        DoctorDTO invalidDoctorDTO = new DoctorDTO(
-                1,
-                "user",
-                "pass",
-                "Stephen",
-                "Strange",
-                12000,
-                15000,
-                "961234",
-                "invalidEmail",
-                true,
-                10.0);
-
-        assertThrows(HttpClientErrorException.class, () -> underTest.addDoctor(invalidDoctorDTO));
-    }
-
-    @Test
-    void willThrowWhenDoctorAddedExists() {
-        when(doctorRepository.findByUsername(doctorDTO1.username())).thenReturn(Optional.of(doctor1));
-
-        assertThrows(HttpClientErrorException.class, () -> underTest.addDoctor(doctorDTO1));
-    }
-
-    @Test
     void updateDoctor() {
         Integer id = doctorDTO1.id();
         when(doctorRepository.findById(id)).thenReturn(Optional.of(doctor1));

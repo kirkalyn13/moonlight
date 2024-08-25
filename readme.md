@@ -10,7 +10,7 @@ A simple concept REST API server to search and notify available relievers, built
 
 ## Tech Stack
 
-**Server:** Java, Spring Boot
+**Server:** Java, Spring Boot, PostgreSQL, Spring Boot Security, Spring Web, Java Mail Sender, Lombok
 
 ## Deployment
 

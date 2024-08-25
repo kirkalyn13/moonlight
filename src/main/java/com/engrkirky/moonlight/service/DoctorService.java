@@ -10,7 +10,6 @@ public interface DoctorService {
     Page<DoctorDTO> getDoctors(String search, Pageable pageable);
     DoctorDTO getDoctorById(Integer id);
     List<DoctorDTO> getAvailableDoctors();
-    Integer addDoctor(DoctorDTO doctorDTO);
     DoctorDTO updateDoctor(Integer id, DoctorDTO doctorDTO);
     void deleteDoctor(Integer id);
 }
