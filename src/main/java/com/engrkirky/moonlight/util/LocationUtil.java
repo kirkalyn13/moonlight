@@ -1,6 +1,7 @@
 package com.engrkirky.moonlight.util;
 
 public class LocationUtil {
+    private LocationUtil() {}
     private static final int EARTH_RADIUS_KM = 6371;
     public static boolean isValidLatitude(double latitude) {
         return latitude >= -90 && latitude <= 90;
