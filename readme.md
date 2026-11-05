@@ -29,7 +29,3 @@ When running the application, visit the [Swagger Docs](http://localhost:8080/swa
 ## Authors
 
 - [Engr. Kirk Alyn Santos](https://github.com/kirkalyn13)
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
